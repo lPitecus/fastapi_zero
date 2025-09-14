@@ -38,3 +38,51 @@ def test_read_users(client):
             }
         ]
     }
+
+
+def test_update_user(client):
+    response = client.put(
+        '/users/1',
+        json={
+            'username': 'Bob',
+            'email': 'bob@example.com',
+            'password': '123',
+        },
+    )
+
+    assert response.status_code == HTTPStatus.OK
+    assert response.json() == {
+        'username': 'Bob',
+        'email': 'bob@example.com',
+        'id': 1,
+    }
+
+
+def test_update_user_inexistente(client):
+    response = client.put(
+        '/users/999',
+        json={
+            'username': 'Bob',
+            'email': 'bob@gmail.com',
+            'password': '123',
+        },
+    )
+    assert response.status_code == HTTPStatus.NOT_FOUND
+
+
+def test_delete_user(client):
+    response = client.delete('/users/1')
+
+    assert response.status_code == HTTPStatus.OK
+    assert response.json() == {
+        'username': 'Bob',
+        'email': 'bob@example.com',
+        'id': 1,
+    }
+
+
+def test_delete_user_inexistente(client):
+    response = client.delete(
+        '/users/999',
+    )
+    assert response.status_code == HTTPStatus.NOT_FOUND
